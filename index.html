@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!-- Proxima Nova reference -->
     <link href="https://use.typekit.net/emv3zbo.css" rel="stylesheet" crossorigin="anonymous">
 
@@ -48,7 +51,7 @@ body {
     display: none; /* Hide the popup tip */
 }
 
-.label .leaflet-popup-content {
+.label .leaflet-popup-content { /* Labels */
     font-size: 12px; /* Adjust font size as needed */
     color: black; /* Set the text color to black */
     font-family: 'proxima-nova', sans-serif !important;
@@ -59,8 +62,23 @@ body {
     width: 100%; /* Ensure content takes full width */
 }
 
-.leaflet-popup-content, .leaflet-popup-content div {
+.leaflet-popup-content, .leaflet-popup-content div { /* Written Content for each marker */
     font-family: 'proxima-nova', sans-serif;
+}
+
+/* CSS for Mobile Devices */
+@media screen and (max-width: 768px) {
+    .label .leaflet-popup-content {
+        font-size: 12px; /* Increase font size for mobile */
+            text-align: center; /* Center the text horizontally */
+
+    }
+
+    .leaflet-popup-content, .leaflet-popup-content div {
+        width: 50%;  /* Set width to 50% for mobile */
+        height: 40%; /* Set height to 40% for mobile */
+        font-size: 12px; /* Increase font size for mobile */
+    }
 }
 
 
