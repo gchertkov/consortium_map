@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Proxima Nova reference -->
+    <link href="https://use.typekit.net/emv3zbo.css" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Arizona Bootstrap reference -->
+    <link rel="stylesheet" href="https://cdn.digital.arizona.edu/lib/arizona-bootstrap/2.0.25/css/arizona-bootstrap.min.css" crossorigin="anonymous">
     <title>Interactive Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
     <style>
+
+body {
+        font-family: 'proxima-nova'; /* Assuming 'proxima-nova' is the correct family name */
+    }
+
         body, html {
             margin: 0;
             padding: 0;
@@ -21,6 +31,7 @@
             height: calc(100vh - 45px); /* Adjust the 50px to match the actual height of your title section */
         }
         .label .leaflet-popup-content-wrapper {
+            font-family: 'proxima-nova'; /* Assuming 'proxima-nova' is the correct family name */
     background: none; /* Set the background to white */
     box-shadow: none; /* Remove shadow */
     border: none; /* Remove border */
@@ -40,12 +51,18 @@
 .label .leaflet-popup-content {
     font-size: 12px; /* Adjust font size as needed */
     color: black; /* Set the text color to black */
+    font-family: 'proxima-nova', sans-serif !important;
     font-weight: bolder;
     white-space: normal; /* Allow the text to wrap */
     margin: 0; /* Remove default margin */
     padding: 0; /* Remove default padding */
     width: 100%; /* Ensure content takes full width */
 }
+
+.leaflet-popup-content, .leaflet-popup-content div {
+    font-family: 'proxima-nova', sans-serif;
+}
+
 
 .grayscale-tile {
     filter: grayscale(0%) sepia(20%) saturate(0%) brightness(100%) contrast(50%);
