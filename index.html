@@ -38,8 +38,7 @@ body {
     background: none; /* Set the background to white */
     box-shadow: none; /* Remove shadow */
     border: none; /* Remove border */
-    width: 140px; /* Fixed width for the label */
-    height: 30px; /* Fixed height for the label */
+    width: 180px; /* Fixed width for the label */
     overflow: hidden; /* Hide overflow text */
     text-align: center; /* Center the text horizontally */
     display: flex; /* Use flexbox for layout */
@@ -52,10 +51,10 @@ body {
 }
 
 .label .leaflet-popup-content { /* Labels */
-    font-size: 12px; /* Adjust font size as needed */
+    font-size: 14px; /* Adjust font size as needed */
     color: black; /* Set the text color to black */
     font-family: 'proxima-nova', sans-serif !important;
-    font-weight: bolder;
+    font-weight: bold;
     white-space: normal; /* Allow the text to wrap */
     margin: 0; /* Remove default margin */
     padding: 0; /* Remove default padding */
@@ -83,7 +82,7 @@ body {
 
 
 .grayscale-tile {
-    filter: grayscale(0%) sepia(20%) saturate(0%) brightness(100%) contrast(50%);
+    filter: brightness(100%) contrast(50%);
 }
 
     </style>
@@ -123,7 +122,7 @@ var grayscaleLayer = new GrayscaleTileLayer('https://server.arcgisonline.com/Arc
 
 
 // Define the array of colors
-var colors = ['#be2037', '#70b865', '#007d85', '#b06045', '#63784c', '#338cbd', '#ea9a37', '#80d3ed'];
+var colors = ['#be2037', '#ea9a37','#70b865','#b06045','#007d85','#80d3ed','#338cbd','#63784c' ];
 
 // Function to create a custom icon
 function createCustomIcon(color) {
@@ -136,7 +135,7 @@ function createCustomIcon(color) {
 
     var points = [
     {
-        name: "Biosphere2",
+        name: "University of Arizona Biosphere 2",
         coords: [32.57837437431258, -110.85119103862993],
         text: "Biosphere 2 at the University of Arizona is a major research hub focused on climate change, biodiversity, and sustainable development. It houses the largest indoor ecological study environment and supports space habitat research. In the past decade, its programs have grown, guided by a strategic plan centered on sustainability, resilience, and inclusive values. Aiming to be a global resilience center by 2030, it combines research, education, and innovative Earth and space solutions.",
         imageUrl: "https://bloximages.chicago2.vip.townnews.com/tucson.com/content/tncms/assets/v3/editorial/f/98/f98237c4-03df-5c15-a1da-241d1d17d8c9/5faf605c2d7c5.image.jpg?resize=880%2C500"
