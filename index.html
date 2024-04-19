@@ -120,7 +120,7 @@ body {
     </div>    
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <script>
-
+var fetchedData = [];  // Define fetchedData globally to ensure it is accessible throughout the script
 function toggleFilters() {
         var checkboxContainer = document.getElementById('checkboxes');
         checkboxContainer.style.display = checkboxContainer.style.display === 'none' ? 'block' : 'none'; // Toggle display
@@ -142,11 +142,13 @@ function toggleFilters() {
             fetch('https://script.google.com/macros/s/AKfycbx9YOQSJobZEUaYmuNkeCkCBGwoO75oKecPEAACmSQH7bzm9G2TFnsJZ3h0IxRSIDY/exec')
             .then(response => response.json())
             .then(data => {
-                initializePrimaryColorMap(data);
-                initializePrimaryGroups(data);
-                createMarkers(data);
-                populateCheckboxes();
-            })
+    fetchedData = data; // Store the fetched data globally
+    initializePrimaryColorMap(data);
+    initializePrimaryGroups(data);
+    createMarkers(data);
+    populateCheckboxes();
+})
+
             .catch(error => console.error('Error loading the map data:', error));
         
             function initializePrimaryColorMap(data) {
