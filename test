@@ -1,0 +1,131 @@
+
+    var map = L.map('map', {
+        maxZoom: 18,
+        worldCopyJump: true
+    }).setView([0, 0], 3);
+
+    var GrayscaleTileLayer = L.TileLayer.extend({
+    getTileUrl: function(coords) {
+        // Call the original method to get the URL
+        var url = L.TileLayer.prototype.getTileUrl.call(this, coords);
+        return url;
+    },
+
+    createTile: function(coords) {
+        // Call the original method to create the tile
+        var tile = L.TileLayer.prototype.createTile.call(this, coords);
+        // Add a specific class to the tile for CSS targeting
+        tile.className += ' grayscale-tile';
+        return tile;
+    }
+});
+
+var grayscaleLayer = new GrayscaleTileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19,
+    attribution: '© ESRI'
+}).addTo(map);
+
+
+// Define the array of colors
+var colors = ['#be2037', '#ea9a37','#70b865','#b06045','#007d85','#80d3ed','#338cbd','#63784c' ];
+
+// Function to create a custom icon
+function createCustomIcon(color) {
+    return L.divIcon({
+        className: 'custom-div-icon',
+        html: "<div style='background-color:" + color + "; width: 25px; height: 25px; border-radius: 50%;'></div>",
+        iconAnchor: [12, 0]
+    });
+}
+
+    var points = [
+    {
+        name: "University of Arizona Biosphere 2",
+        coords: [32.57837437431258, -110.85119103862993],
+        text: "Biosphere 2 at the University of Arizona is a major research hub focused on climate change, biodiversity, and sustainable development. It houses the largest indoor ecological study environment and supports space habitat research. In the past decade, its programs have grown, guided by a strategic plan centered on sustainability, resilience, and inclusive values. Aiming to be a global resilience center by 2030, it combines research, education, and innovative Earth and space solutions.",
+        imageUrl: "https://bloximages.chicago2.vip.townnews.com/tucson.com/content/tncms/assets/v3/editorial/f/98/f98237c4-03df-5c15-a1da-241d1d17d8c9/5faf605c2d7c5.image.jpg?resize=880%2C500"
+        ,href: "https://biosphere2.org"
+
+    },
+    {
+        name: "Eden Project",
+        coords: [50.36046293810582, -4.744116985204797],
+        text: "The Eden Project is dedicated to celebrating and reconnecting people with plants and nature, acknowledging their crucial role in providing life essentials like food, air, and medicine. It aims to regenerate damaged landscapes and foster environmental and social sustainability through innovative technologies and collaborative projects. The project emphasizes the interconnection between human health and the health of the natural world. By working with global and local partners, Eden seeks to conserve and sustainably manage landscapes using creative, environmental, and social strategies.",
+        imageUrl: "https://www.edenproject.com/sites/default/files/styles/16_9_media_small/public/2021-05/Eden%20panorama%202019%20BF%2002-1.jpg?h=55fa2655&itok=a4KqP-YF"
+        ,href: "https://www.edenproject.com"
+
+    },
+    {
+        name: "Universidad Nacional Autónoma de México",
+        coords: [19.332724897073337, -99.18814024463414],
+        text: "The Universidad Nacional Autónoma de México (UNAM) is Mexico's largest and most significant university, recognized for its excellence in teaching, research, and cultural dissemination. It features 27 public museums, galleries, botanical gardens, planetariums, and observatories, promoting science and culture. A highlight is the National Biodiversity Pavilion with four biological collections (fish, amphibians/reptiles, birds, mammals), totaling around 130,000 specimens. These collections, emphasizing Mexican biodiversity, offer museum specimens and associated data online for the scientific community.",
+        imageUrl: "http://www.iawa-website.org/uploads/allimg/210730/2-210I014414aS.jpg"
+        ,href: "https://www.ib.unam.mx"
+
+    },
+    {
+        name: "L’Université Mohammed VI Polytechnique",
+        coords: [33.980106996378915, -6.729353933794483],
+        text: "ESAFE, part of Mohammed VI Polytechnic University, aspires to be a leading institution in agriculture education and research in Africa. The school focuses on training agricultural experts in food security, research advancements, and sustainable practices in water and soil management. Its Master’s programs, accredited by Morocco's Ministry of National Education, cover essential topics like fertilizers, environment, and crop productivity. ESAFE’s mission is to integrate academic and professional training in African agriculture, emphasizing high-tech and sustainable methods, and fostering innovation and entrepreneurship in the AgriTech sector.",
+        imageUrl: "https://www.archidatum.com/media/8800/universite_mohammed_vi_polytecnique_benguerir_morocco_ricardo_bofill_taller_de_arquitectura_13.jpg"
+        ,href: "https://um6p.ma/en/african-chair-innovation-and-sustainable-management"
+
+    },
+    {
+        name: "Thomas Lovejoy Amazon Biodiversity Center",
+        coords: [-2.333531522077161, -59.99995425749578],
+        text: "The Thomas Lovejoy Amazon Biodiversity Center (TLABC), established in 2018 by Dr. Thomas Lovejoy, focuses on conserving and sustainably using the Amazon's biodiversity. TLABC's activities include collaborative scientific research on habitat fragmentation and restoration, educational programs for students and professionals, and public awareness initiatives in policy and private sectors. Key projects include the Biological Dynamics of Forest Fragments Project, studying the impact of human development and climate change in the Amazon, and Global Advocacy, where Dr. Lovejoy advised decision-makers on biodiversity preservation. For over 40 years, the center has observed changes in the Amazon Rainforest, a crucial global ecosystem.",
+        imageUrl: "https://static.wixstatic.com/media/16e93b_9ff3f3174010424b98660e6d45c04592~mv2.png/v1/fill/w_780,h_440,al_c,q_85,enc_auto/16e93b_9ff3f3174010424b98660e6d45c04592~mv2.png"
+        ,href: "https://www.amazonbiodiversitycenter.org"
+
+    },
+    {
+        name: "Sustainable Valley Project",
+        coords: [59.34988151362335, 18.070160038454013],
+        text: "Information about Sustainability Valley",
+        imageUrl: "URL_of_the_image_for_Sustainability_Valley"
+        ,href: "URL_of_the_hyperlink_for_Biosphere2"
+
+    },
+    {
+        name: "Centre National de Recherche Scientifique",
+        coords: [43.68176880283937, 3.8763914602738927],
+        text: "The Ecotron, part of the CNRS Institute of Ecology and Environment, is a research lab that facilitates climatic conditioning and real-time measurement of ecosystem processes. It's open to national and international research teams in ecology, population biology, community biology, agronomy, and other scientific fields requiring controlled environmental conditions. The facility is co-financed by the ERDF, ANR/AnaEE France, and the Occitanie Region, with significant CNRS investment in construction and annual operating costs.",
+        imageUrl: "https://www.ecotron.cnrs.fr/wp-content/uploads/2019/11/Cnrs-Ecotron.jpg"
+        ,href: "https://www.ecotron.cnrs.fr/en/"
+    },
+    {
+        name: "Dead Sea and Arava Science Center",
+        coords: [30.77805915682585, 35.23926439679792],
+        text: "The Dead Sea-Arava Science Center (DSASC) operates in a unique region of Israel, covering about 20% of the country and known for its extreme geography, climate, and rich biodiversity. This area, also of significant cultural and historical importance, is utilized economically in agriculture, tourism, and industry, while preserving its natural resources. DSASC's goals include conducting applied research for sustainable development, fostering scientific literacy, and promoting cross-border scientific cooperation. Their research spans climate change, sustainable management of natural resources, biodiversity, agriculture in arid climates, and the medical benefits of the Dead Sea environment, among other areas, and is disseminated through their electronic journal 'The Dead Sea and Arava Research'.",
+        imageUrl: "https://www.ica-il.org/wp-content/uploads/2020/12/image001.jpg"
+        ,href: "https://www.adssc.org/en/"
+    }
+];
+
+
+points.forEach(function(point, index) {
+    // Use the color array to cycle through colors for each point
+    var customIcon = createCustomIcon(colors[index % colors.length]);
+
+    var marker = L.marker(point.coords, { icon: customIcon }).addTo(map);
+
+    // Create a popup that will act as a label
+    var label = L.popup({
+        closeButton: false,
+        autoClose: false,
+        closeOnEscapeKey: false,
+        closeOnClick: false,
+        className: 'label', // Add a custom class for styling
+        offset: [0, 85] // Adjust the position of the label
+    })
+    .setContent(point.name)
+    .setLatLng(point.coords);
+
+    // Add the label to the map
+    label.addTo(map);
+
+    // Bind a standard popup for additional information
+    marker.bindPopup("<div style='text-align: center;'><b>" + point.name + "</b></div><br><img src='" + point.imageUrl + "' alt='" + point.name + "' style='width:300px;'><br>" + point.text + "<br><div style='text-align: center;'><a href='" + point.href + "' target='_blank'>More Info</a></div>");
+});
+
