@@ -131,7 +131,7 @@ function toggleFilters() {
         document.addEventListener('DOMContentLoaded', function() {
             var map = L.map('map', { maxZoom: 18, worldCopyJump: true }).setView([0, 0], 3);
             var primaryGroups = {}; // Object to hold the layer groups by primary category
-            var colors = ['#be2037', '#ea9a37', '#70b865', '#b06045', '#007d85', '#80d3ed', '#338cbd', '#63784c'];
+            var colors = ['#be2037', '#ea9a37', '#70b865', '#b06045', '#007d85', '#80d3ed', '#338cbd', '#63784c','#c2a4cf','#800000'];
             var primaryColorMap = {};
         
             var grayscaleLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
