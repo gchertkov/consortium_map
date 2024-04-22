@@ -190,15 +190,16 @@ function toggleFilters() {
             }
         
             function createPopupContent(point) {
-                var tabs = Object.keys(point).filter(key => !['Name', 'Latitude', 'Longitude', 'ImageUrl', 'Link', 'Primary'].includes(key));
-                var tabButtons = tabs.map(tab => `<button class='tab-button' onclick='showTabContent("${point.Name}", "${tab.toLowerCase()}")'>${tab}</button>`).join('');
-                return `<div style='text-align: center;'><b>${point.Name}</b></div>
-                        <div class='popup-tabs'>${tabButtons}</div>
-                        <div id='${point.Name}-content' class='tab-content'>
-                            <img src='${point.ImageUrl}' alt='${point.Name}' style='width:100%;'><br>${point[tabs[0]]}
-                        </div>
-                        <div style='text-align: center;'><a href='${point.Link}' target='_blank'>More Info</a></div>`;
-            }
+    var tabs = Object.keys(point).filter(key => !['Name', 'Latitude', 'Longitude', 'ImageUrl', 'Link', 'Primary'].includes(key));
+    var tabButtons = tabs.map(tab => `<button class='tab-button' onclick='showTabContent("${point.Name}", "${tab.toLowerCase()}")'>${tab}</button>`).join('');
+    return `<div style='text-align: center;'><b>${point.Name}</b></div>
+            <div class='popup-tabs'>${tabButtons}</div>
+            <div id='${point.Name}-content' class='tab-content'>
+                <img src='${point.ImageUrl}' alt='${point.Name}' style='width:100%;'><br>${point[tabs[0]].replace(/\n/g, '<br>')}
+            </div>
+            <div style='text-align: center;'><a href='${point.Link}' target='_blank'>More Info</a></div>`;
+}
+
         
             function populateCheckboxes() {
                 var checkboxContainer = document.getElementById('checkboxes');
