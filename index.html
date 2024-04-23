@@ -109,16 +109,18 @@
             iconAnchor: [12, 12] // Center the icon properly
         });
     }
-            function createPopupContent(point) {
+    function createPopupContent(point) {
     var tabs = Object.keys(point).filter(key => !['Name', 'Latitude', 'Longitude', 'ImageUrl', 'Link', 'Primary'].includes(key));
     var tabButtons = tabs.map(tab => `<button class='tab-button' onclick='showTabContent("${point.Name}", "${tab.toLowerCase()}")'>${tab}</button>`).join('');
+    var primaryStakeholdersLink = `stakeholders.html?name=${encodeURIComponent(point.Primary)}`;
     return `<div style='text-align: center;'><b>${point.Name}</b></div>
             <div class='popup-tabs'>${tabButtons}</div>
             <div id='${point.Name}-content' class='tab-content'>
                 <img src='${point.ImageUrl}' alt='${point.Name}' style='width:100%;'><br>${point[tabs[0]].replace(/\n/g, '<br>')}
             </div>
-            <div style='text-align: center;'><a href='stakeholder.html?name=${encodeURIComponent(point.Name)}' target='_blank'>More Info</a></div>`;
+            <div style='position: absolute; top: 35px; right: 5px;'><a href='${primaryStakeholdersLink}' target='_blank'><img src='outlink.png' alt='Primary Stakeholders' style='width: 20px; background-color: white;'></a></div>`;
 }
+
 
 
             function populateCheckboxes() {
