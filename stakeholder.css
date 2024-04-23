@@ -1,0 +1,140 @@
+/* General body styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+#main {
+    list-style: none;
+    background: #6BBE92;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-around; /* This will space items evenly, but each will not necessarily align to text */
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    position: relative; /* Needed to position the marker */
+  }
+  
+  #main li {
+    flex: 1;  /* Ensures each menu item takes equal space */
+    font-size: 16px;
+    padding: 15px 20px;
+    cursor: pointer;
+    text-align: center;
+    position: relative; /* Required for positioning the dropdowns correctly */
+    z-index: 100;
+  }
+
+  /* Ensure that each dropdown is not displayed and has a specific width */
+  #main .drop {
+    display: none;
+    position: absolute;
+    left: 0; /* Align with the start of the parent li */
+    top: 100%; /* Positioned right below the li */
+    width: 100%; /* Match the width of parent li */
+    background: #3E8760;
+    z-index: 1000; /* Higher z-index to overlay on top of other content */
+  }
+  
+  /* Specific rules for the 'Skills' dropdown */
+  #main li:nth-child(3) .drop {
+    width: 100%; /* Width relative to its parent */
+  }
+  
+  #main li:hover .drop,
+  #main .drop:hover {
+      display: block; /* Keeps dropdown visible when hovering over it */
+  }
+  
+  .drop li {
+    color: white;
+    padding: 10px;
+    text-align: center;
+    display: block; /* Ensures it spans the full width of the dropdown */
+  }
+  
+ /* Initially position the marker under the first item */
+#marker {
+    height: 6px;
+    background: #3E8760;
+    position: absolute;
+    bottom: 0;
+    left: 0; /* Start at the leftmost side */
+    width: calc(100% / 4); /* Assuming there are 4 items, adjust as needed */
+    transition: transform 0.35s ease;
+    transform: translateX(0%); /* Start with no movement */
+  }
+  
+  /* Dynamic movement of marker based on hover */
+  #main li:nth-child(1):hover ~ #marker,
+  #main li:nth-child(1):focus-within ~ #marker {
+    transform: translateX(0%); /* No movement for the first item */
+  }
+  
+  #main li:nth-child(2):hover ~ #marker,
+  #main li:nth-child(2):focus-within ~ #marker {
+    transform: translateX(100%); /* Move right to the second item */
+  }
+  
+  #main li:nth-child(3):hover ~ #marker,
+  #main li:nth-child(3):focus-within ~ #marker {
+    transform: translateX(200%); /* Move right to the third item */
+  }
+  
+  #main li:nth-child(4):hover ~ #marker,
+  #main li:nth-child(4):focus-within ~ #marker {
+    transform: translateX(300%); /* Move right to the fourth item */
+  }
+
+
+/* Main content area */
+main {
+    margin: 20px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+main h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+main section {
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+main section:last-child {
+    border-bottom: none;
+}
+
+main h2 {
+    font-size: 20px;
+    color: #666;
+}
+
+main p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #666;
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 768px) {
+    nav ul li {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+
+    .drop div {
+        width: 100%; /* Full-width dropdowns on mobile */
+    }
+}
