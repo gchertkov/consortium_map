@@ -176,10 +176,6 @@ nav {
     /* Lower z-index to be below dropdown */
 }
 
-
-/* Ensure all other styles are correctly integrated and responsive design is updated accordingly */
-
-
 /* Leaflet Popup Content Wrapper: Unified and streamlined settings */
 .leaflet-popup-content-wrapper {
     min-width: 800px; /* Minimum width to accommodate the image and text */
