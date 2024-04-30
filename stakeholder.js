@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function populateStakeholderPage(stakeholder, data) {
             const main = document.getElementById('stakeholder-content');
-            main.innerHTML = `<h1>${stakeholder.Name}</h1>`; // Add the stakeholder name as the main title
-    
+            main.innerHTML = `<h1>${stakeholder.Name}</h1><a href='${stakeholder.Link}' target='_blank'>Link to organization  site</a><br><br>`; // Add the stakeholder name as the main title and a hyperlink below it
+        
             if (stakeholder.ImageUrl) {
                 const image = document.createElement('img');
                 image.src = stakeholder.ImageUrl;
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 image.style.height = '25%'; // Adjust the image size as needed
                 main.appendChild(image);
             }
-    
+        
             // Check if this stakeholder is a secondary stakeholder
             if (stakeholder.Primary && stakeholder.Name !== stakeholder.Primary) {
                 // Display backlink to primary if not the primary page
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 main.appendChild(document.createElement('br'));
                 main.appendChild(primaryLink);
             }
-    
+        
             // Display links to other secondary stakeholders if applicable
             const secondaryStakeholders = data.filter(item => item.Primary === stakeholder.Primary && item.Name !== stakeholder.Name);
             if (secondaryStakeholders.length > 0) {
@@ -49,16 +49,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 main.appendChild(linksContainer);
             }
-    
+        
             // Add other details
             Object.keys(stakeholder).forEach(key => {
-                if (!['Name', 'Latitude', 'Longitude', 'Primary', 'ImageUrl', 'Link'].includes(key)) {
+                if (!['Name', 'Latitude', 'Longitude', 'Primary', 'ImageUrl', 'Link','Country'].includes(key)) {
                     const section = document.createElement('section');
                     section.innerHTML = `<h2>${key}</h2><p>${stakeholder[key].replace(/\n/g, '<br>')}</p>`;
                     main.appendChild(section);
                 }
             });
         }
+        
         
         function populateNavigation(data) {
             var stakeholdersList = document.querySelector('.drop div');
