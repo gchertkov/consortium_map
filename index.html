@@ -30,6 +30,17 @@
             </div>
         </ul>
     </nav>
+    <div id="search-container" style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
+        <div id="search-bar" onclick="expandSearch()">
+            <input type="text" id="search-input" oninput="enableSearchButton()" placeholder="Search...">
+            <button id="search-button" onclick="submitSearch()" style="display:none;">Search</button>
+        </div>
+        <div id="search-term-container" style="display: none; position: absolute; top: 100%; width: calc(100% - 2px); background-color: #f2f2f2; border: 1px solid #ccc;">
+            <span id="search-term"></span>
+            <button onclick="resetSearch()" style="margin-left: 5px;">×</button>
+        </div>
+    </div>
+
     <div id="map"></div>
     <div id="title-overlay">Global Environmental Resilience Consortium</div>
     <div id="map-controls"
@@ -41,7 +52,131 @@
     </div>
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <script>
-        var fetchedData = [];  // Define fetchedData globally to ensure it is accessible throughout the script
+        var map, primaryGroups = {}, fetchedData = [];
+        var primaryColorMap = {};
+
+
+        function expandSearch() {
+            var searchBar = document.getElementById('search-bar');
+            searchBar.classList.add('active');
+            document.getElementById('search-input').focus();
+        }
+
+        document.addEventListener('click', function(event) {
+    var searchBar = document.getElementById('search-bar');
+    if (event.target !== searchBar && !searchBar.contains(event.target)) {
+        searchBar.classList.remove('active');
+        document.getElementById('search-input').value = ''; // Clear input field when minimizing
+        document.getElementById('search-button').style.display = 'none'; // Hide search button when minimizing
+    }
+    
+});
+
+
+        function enableSearchButton() {
+            var searchInput = document.getElementById('search-input');
+            var searchButton = document.getElementById('search-button');
+            if (searchInput.value.length > 0) {
+                searchButton.style.display = 'inline-block';
+            } else {
+                searchButton.style.display = 'none';
+            }
+        }
+
+        function createCustomIcon(primary, name, color) {
+            var borderColor = primary !== name ? '3px solid white' : '0px solid transparent'; // Add white border if Primary is different
+            return L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style='background-color: ${color}; width: 25px; height: 25px; border-radius: 50%; border: ${borderColor};'></div>`,
+                iconAnchor: [12, 12] // Center the icon properly
+            });
+        }
+
+        function createPopupContent(point) {
+            var tabs = Object.keys(point).filter(key => !['Name', 'Latitude', 'Longitude', 'ImageUrl', 'Link', 'Primary', 'Country'].includes(key)); // Exclude 'Country'
+            var tabButtons = tabs.map(tab => `<button class='tab-button' onclick='showTabContent("${point.Name}", "${tab.toLowerCase()}")'>${tab}</button>`).join('');
+            var primaryStakeholdersLink = `stakeholders.html?name=${encodeURIComponent(point.Primary)}`;
+
+            return `<div class='popup-container'>
+        <div style='display: flex; align-items: center; justify-content: center; margin-bottom: 10px;'>
+            <b style='margin-right: 10px;'>${point.Name}</b>
+            <a href='${primaryStakeholdersLink}' target='_blank' style='display: inline-block; vertical-align: top; position: relative; top: -2px;'>
+                <img src='outlink.png' alt='Primary Stakeholders' style='width: 20px; height: 20px;'>
+            </a>
+        </div>
+        <div class='popup-tabs'>${tabButtons}</div>
+        <div id='${point.Name}-content' class='tab-content'>
+            <img src='${point.ImageUrl}' alt='${point.Name}' class='popup-image'><br>${point[tabs[0]].replace(/\n/g, '<br>')}<br>
+            <a href='${point.Link}' target='_blank' >Link to organization website</a>
+        </div>
+    </div>`;
+        }
+
+
+        function initializeMarkers() {
+            fetchedData.forEach(point => {
+                var color = primaryColorMap[point.Primary];
+                var customIcon = createCustomIcon(point.Primary, point.Name, color);
+                var marker = L.marker([point.Latitude, point.Longitude], { icon: customIcon });
+
+                // Add searchable text for the marker
+                marker._searchableText = (point.Name + ' ' + (point.Description || '') + ' ' + (point.OtherFields || []).join(' ')).toLowerCase();
+
+                marker.bindTooltip(point.Name, { permanent: true, direction: 'bottom', offset: [2, 24] });
+                marker.bindPopup(createPopupContent(point));
+                primaryGroups[point.Primary].addLayer(marker);
+            });
+        }
+
+        function submitSearch() {
+    var input = document.getElementById('search-input').value.toLowerCase();
+    console.log("Searching for:", input);
+    currentSearchTerm = input;
+
+    // Show search term below search bar
+    var searchTermContainer = document.getElementById('search-term-container');
+    var searchTermSpan = document.getElementById('search-term');
+    searchTermSpan.textContent = input;
+    searchTermContainer.style.display = 'block';
+
+    // Filter markers based on search input
+    for (var primary in primaryGroups) {
+        primaryGroups[primary].eachLayer(function (marker) {
+            if (marker._searchableText && marker._searchableText.includes(input)) {
+                marker.addTo(map);  // Show only markers that match search term
+            } else {
+                primaryGroups[primary].removeLayer(marker);  // Hide others
+            }
+        });
+    }
+}
+
+function resetSearch() {
+    // Clear search input and hide search term container
+    document.getElementById('search-input').value = '';
+    var searchTermContainer = document.getElementById('search-term-container');
+    searchTermContainer.style.display = 'none';
+
+    // Reset map to show all markers, regardless of previous filters
+    Object.keys(primaryGroups).forEach(primary => {
+        primaryGroups[primary].clearLayers();  // Clear current layers
+
+        // Re-add each marker to the map
+        fetchedData.forEach(point => {
+            if (point.Primary === primary) {
+                var marker = L.marker([point.Latitude, point.Longitude], { icon: createCustomIcon(point.Primary, point.Name, primaryColorMap[point.Primary]) });
+                marker.bindTooltip(point.Name, { permanent: true, direction: 'bottom', offset: [2, 24] });
+                marker.bindPopup(createPopupContent(point));
+                marker._searchableText = (point.Name + ' ' + (point.Description || '') + ' ' + (point.OtherFields || []).join(' ')).toLowerCase();
+                primaryGroups[primary].addLayer(marker);
+            }
+        });
+        primaryGroups[primary].addTo(map);  // Add back all original markers
+    });
+}
+
+
+
         function toggleFilters() {
             var checkboxContainer = document.getElementById('checkboxes');
             checkboxContainer.style.display = checkboxContainer.style.display === 'none' ? 'block' : 'none'; // Toggle display
@@ -50,10 +185,8 @@
 
 
         document.addEventListener('DOMContentLoaded', function () {
-            var map = L.map('map', { maxZoom: 18, worldCopyJump: true }).setView([0, 0], 3);
-            var primaryGroups = {}; // Object to hold the layer groups by primary category
+            map = L.map('map', { maxZoom: 18, worldCopyJump: true }).setView([0, 0], 3);
             var colors = ['#be2037', '#ea9a37', '#70b865', '#b06045', '#007d85', '#80d3ed', '#338cbd', '#63784c', '#c2a4cf', '#800000'];
-            var primaryColorMap = {};
 
             var grayscaleLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 maxZoom: 19,
@@ -67,6 +200,7 @@
                     initializePrimaryColorMap(data);
                     initializePrimaryGroups(data);
                     createMarkers(data);
+                    initializeMarkers();
                     populateCheckboxes();
                     populateNavigation(data); // Populate navigation with fetched data
                 })
@@ -95,40 +229,16 @@
                     var color = primaryColorMap[point.Primary];
                     var customIcon = createCustomIcon(point.Primary, point.Name, color);
                     var marker = L.marker([point.Latitude, point.Longitude], { icon: customIcon });
+
+                    // Add searchable text for the marker (moved from initializeMarkers)
+                    marker._searchableText = (point.Name + ' ' + (point.Description || '') + ' ' + (point.OtherFields || []).join(' ')).toLowerCase();
+
+
                     marker.bindTooltip(point.Name, { permanent: true, direction: 'bottom', offset: [2, 24] });
                     marker.bindPopup(createPopupContent(point));
                     primaryGroups[point.Primary].addLayer(marker); // Add marker to its respective group
                 });
             }
-
-            function createCustomIcon(primary, name, color) {
-                var borderColor = primary !== name ? '3px solid white' : '0px solid transparent'; // Add white border if Primary is different
-                return L.divIcon({
-                    className: 'custom-div-icon',
-                    html: `<div style='background-color: ${color}; width: 25px; height: 25px; border-radius: 50%; border: ${borderColor};'></div>`,
-                    iconAnchor: [12, 12] // Center the icon properly
-                });
-            }
-            function createPopupContent(point) {
-    var tabs = Object.keys(point).filter(key => !['Name', 'Latitude', 'Longitude', 'ImageUrl', 'Link', 'Primary', 'Country'].includes(key)); // Exclude 'Country'
-    var tabButtons = tabs.map(tab => `<button class='tab-button' onclick='showTabContent("${point.Name}", "${tab.toLowerCase()}")'>${tab}</button>`).join('');
-    var primaryStakeholdersLink = `stakeholders.html?name=${encodeURIComponent(point.Primary)}`;
-
-    return `<div class='popup-container'>
-        <div style='display: flex; align-items: center; justify-content: center; margin-bottom: 10px;'>
-            <b style='margin-right: 10px;'>${point.Name}</b>
-            <a href='${primaryStakeholdersLink}' target='_blank' style='display: inline-block; vertical-align: top; position: relative; top: -2px;'>
-                <img src='outlink.png' alt='Primary Stakeholders' style='width: 20px; height: 20px;'>
-            </a>
-        </div>
-        <div class='popup-tabs'>${tabButtons}</div>
-        <div id='${point.Name}-content' class='tab-content'>
-            <img src='${point.ImageUrl}' alt='${point.Name}' class='popup-image'><br>${point[tabs[0]].replace(/\n/g, '<br>')}<br>
-            <a href='${point.Link}' target='_blank' >Link to organization website</a>
-        </div>
-    </div>`;
-}
-
 
             function populateCheckboxes() {
                 var checkboxContainer = document.getElementById('checkboxes');

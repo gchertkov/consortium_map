@@ -346,3 +346,49 @@ nav {
     width: 100%; /* Sets the width of the container to take full available width */
     padding: 10px; /* Optional: Adds some padding inside the container */
 }
+
+#search-bar {
+    margin-top: 40px;
+    display: flex;
+    width: 30px;
+    height: 30px;
+    transition: width 0.4s ease;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background: url('search.png') no-repeat center;
+    background-size: contain;
+}
+
+#search-bar.active, #search-bar:hover {
+    width: 250px; /* width large enough to fit text */
+}
+
+#search-bar input, #search-bar button {
+    flex-grow: 1;
+    border: none;
+    display: none; /* initially hidden */
+}
+
+#search-bar.active input, #search-bar.active button {
+    display: inline-block;
+}
+
+#search-bar.active {
+    background: none; /* Remove background image when active */
+}
+
+#search-bar button {
+    background: #ccc;
+    cursor: pointer;
+}
+
+#search-term-container {
+    padding: 5px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
