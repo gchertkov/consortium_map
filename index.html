@@ -31,15 +31,18 @@
         </ul>
     </nav>
     <div id="search-container" style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
-        <div id="search-bar" onclick="expandSearch()">
-            <input type="text" id="search-input" oninput="enableSearchButton()" placeholder="Search...">
-            <button id="search-button" onclick="submitSearch()" style="display:none;">Search</button>
+        <div id="search-bar">
+            <input type="text" id="search-input" placeholder="Search...">
+            <!-- Removed the oninput attribute and always display the button -->
+            <button id="search-button" onclick="submitSearch()">Search</button>
         </div>
-        <div id="search-term-container" style="display: none; position: absolute; top: 100%; width: calc(100% - 2px); background-color: #f2f2f2; border: 1px solid #ccc;">
+        <div id="search-term-container"
+            style="display: none; position: absolute; top: 100%; width: calc(100% - 2px); background-color: #f2f2f2; border: 1px solid #ccc;">
             <span id="search-term"></span>
             <button onclick="resetSearch()" style="margin-left: 5px;">×</button>
         </div>
     </div>
+
 
     <div id="map"></div>
     <div id="title-overlay">Global Environmental Resilience Consortium</div>
@@ -62,26 +65,6 @@
             document.getElementById('search-input').focus();
         }
 
-        document.addEventListener('click', function(event) {
-    var searchBar = document.getElementById('search-bar');
-    if (event.target !== searchBar && !searchBar.contains(event.target)) {
-        searchBar.classList.remove('active');
-        document.getElementById('search-input').value = ''; // Clear input field when minimizing
-        document.getElementById('search-button').style.display = 'none'; // Hide search button when minimizing
-    }
-    
-});
-
-
-        function enableSearchButton() {
-            var searchInput = document.getElementById('search-input');
-            var searchButton = document.getElementById('search-button');
-            if (searchInput.value.length > 0) {
-                searchButton.style.display = 'inline-block';
-            } else {
-                searchButton.style.display = 'none';
-            }
-        }
 
         function createCustomIcon(primary, name, color) {
             var borderColor = primary !== name ? '3px solid white' : '0px solid transparent'; // Add white border if Primary is different
@@ -129,53 +112,51 @@
         }
 
         function submitSearch() {
-    var input = document.getElementById('search-input').value.toLowerCase();
-    console.log("Searching for:", input);
-    currentSearchTerm = input;
+            var input = document.getElementById('search-input').value.toLowerCase();
+            console.log("Searching for:", input);
+            currentSearchTerm = input;
 
-    // Show search term below search bar
-    var searchTermContainer = document.getElementById('search-term-container');
-    var searchTermSpan = document.getElementById('search-term');
-    searchTermSpan.textContent = input;
-    searchTermContainer.style.display = 'block';
+            // Show search term below search bar
+            var searchTermContainer = document.getElementById('search-term-container');
+            var searchTermSpan = document.getElementById('search-term');
+            searchTermSpan.textContent = input;
+            searchTermContainer.style.display = 'block';
 
-    // Filter markers based on search input
-    for (var primary in primaryGroups) {
-        primaryGroups[primary].eachLayer(function (marker) {
-            if (marker._searchableText && marker._searchableText.includes(input)) {
-                marker.addTo(map);  // Show only markers that match search term
-            } else {
-                primaryGroups[primary].removeLayer(marker);  // Hide others
+            // Filter markers based on search input
+            for (var primary in primaryGroups) {
+                primaryGroups[primary].eachLayer(function (marker) {
+                    if (marker._searchableText && marker._searchableText.includes(input)) {
+                        marker.addTo(map);  // Show only markers that match search term
+                    } else {
+                        primaryGroups[primary].removeLayer(marker);  // Hide others
+                    }
+                });
             }
-        });
-    }
-}
+        }
 
-function resetSearch() {
-    // Clear search input and hide search term container
-    document.getElementById('search-input').value = '';
-    var searchTermContainer = document.getElementById('search-term-container');
-    searchTermContainer.style.display = 'none';
+        function resetSearch() {
+            // Clear search input and hide search term container
+            document.getElementById('search-input').value = '';
+            var searchTermContainer = document.getElementById('search-term-container');
+            searchTermContainer.style.display = 'none';
 
-    // Reset map to show all markers, regardless of previous filters
-    Object.keys(primaryGroups).forEach(primary => {
-        primaryGroups[primary].clearLayers();  // Clear current layers
+            // Reset map to show all markers, regardless of previous filters
+            Object.keys(primaryGroups).forEach(primary => {
+                primaryGroups[primary].clearLayers();  // Clear current layers
 
-        // Re-add each marker to the map
-        fetchedData.forEach(point => {
-            if (point.Primary === primary) {
-                var marker = L.marker([point.Latitude, point.Longitude], { icon: createCustomIcon(point.Primary, point.Name, primaryColorMap[point.Primary]) });
-                marker.bindTooltip(point.Name, { permanent: true, direction: 'bottom', offset: [2, 24] });
-                marker.bindPopup(createPopupContent(point));
-                marker._searchableText = (point.Name + ' ' + (point.Description || '') + ' ' + (point.OtherFields || []).join(' ')).toLowerCase();
-                primaryGroups[primary].addLayer(marker);
-            }
-        });
-        primaryGroups[primary].addTo(map);  // Add back all original markers
-    });
-}
-
-
+                // Re-add each marker to the map
+                fetchedData.forEach(point => {
+                    if (point.Primary === primary) {
+                        var marker = L.marker([point.Latitude, point.Longitude], { icon: createCustomIcon(point.Primary, point.Name, primaryColorMap[point.Primary]) });
+                        marker.bindTooltip(point.Name, { permanent: true, direction: 'bottom', offset: [2, 24] });
+                        marker.bindPopup(createPopupContent(point));
+                        marker._searchableText = (point.Name + ' ' + (point.Description || '') + ' ' + (point.OtherFields || []).join(' ')).toLowerCase();
+                        primaryGroups[primary].addLayer(marker);
+                    }
+                });
+                primaryGroups[primary].addTo(map);  // Add back all original markers
+            });
+        }
 
         function toggleFilters() {
             var checkboxContainer = document.getElementById('checkboxes');
@@ -268,8 +249,6 @@ function resetSearch() {
                     stakeholdersList.appendChild(listItem);
                 });
             }
-
-
 
             function filterMarkers(primary) {
                 var checkbox = document.querySelector(`input[value="${primary}"]`);
